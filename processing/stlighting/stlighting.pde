@@ -60,17 +60,20 @@ void draw()
  
 void keyPressed() {
   if (key == 'a') {
+    content[0].jump(0);
     content[0].play();
     index = 0;
     t0 = millis()/1000;
   }
  
   if (key == 's') {
+    content[1].jump(0);
     content[1].play();
     index = 1;
     t0 = millis()/1000;
   }
   if (key == 'd') {
+    content[2].jump(0);
     content[2].play();
     index = 2;
     t0 = millis()/1000;
