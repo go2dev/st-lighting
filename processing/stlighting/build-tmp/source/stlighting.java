@@ -26,7 +26,8 @@ Movie content[];
 int index = 0;                      //Global index of currently playing video from content array
 float t0;                           //playback time counter
 float t;                            //playback time counter
-boolean currentlyPlaying = false;
+boolean currentlyPlaying = false;   //flag for if a file is currently playing or not
+int contentCount = 5;               //total number of video files in the array
 
 
 
@@ -41,14 +42,17 @@ public void setup()
   content = new  Movie[3];
 
   //can this be done in a loop? maybe if the filenames are sensible
-  content[0] = new Movie(this,"comp1.avi");
-  content[1] = new Movie(this, "comp2.avi");
-  content[2] = new Movie(this, "comp3.avi");
+  // content[0] = new Movie(this,"comp1.avi");
+  // content[1] = new Movie(this, "comp2.avi");
+  // content[2] = new Movie(this, "comp3.avi");
 
   //make sure all the videos are paused
-  for (int i = 0; i < content.length; ++i) 
+  for (int i = 0; i < contentCount; ++i) 
   {
+      String fileName = str(i) + ".avi";
+      content[i] = new Movie(this,fileName);
       content[i].pause();
+      println("loaded: "+fileName);
   }
 
 
@@ -69,23 +73,42 @@ public void movieEvent(Movie m)
 public void draw()
 {
 
-
-
-
-
-   if (content[index].available() ) {
-    content[index].read();
+  if (currentlyPlaying==false) //<>//
+  {
+    //pick a number at random
+    int r = (int) random(content.length);
+    println("currently playing: "+r);
+    //reset that video and start playing it
+    content[r].jump(0);
+    content[r].play();
+    //set the control index to this number
+    index = r;
+    //set the counter to the current time for tracking what is playing
+    t0 = millis()/1000;
+    //set currentlyPlaying to true
+    currentlyPlaying=true;
   }
+
+   if (content[index].available() ) 
+    {
+      content[index].read();
+    }
+
   image(content[index], 0, 0);
  
   if (t > content[index].duration() + t0) {
     println("finished! "+index);
+    //if playing has finished, toggle the bool
+    currentlyPlaying=false;
   }
  
   t  = millis()/1000;
+
+  
+
 }
  
-public void keyPressed() {
+/*void keyPressed() {
   if (key == 'a') {
     content[0].jump(0);
     content[0].play();
@@ -104,9 +127,7 @@ public void keyPressed() {
     content[2].play();
     index = 2;
     t0 = millis()/1000;
-  }
-
-}
+  }*/
 /*
  * Simple Open Pixel Control client for Processing,
  * designed to sample each LED's color from some point on the canvas.
