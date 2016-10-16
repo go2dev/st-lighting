@@ -1,13 +1,17 @@
 import processing.video.*;
 OPC opc;
 Movie content[];
+int[] playlist = { 1,2,3,4,0,0,1,3,2,4 };
+
 
 //global variables and constants
+int playHead = 0;
 int index = 0;                      //Global index of currently playing video from content array
 float t0;                           //playback time counter
 float t;                            //playback time counter
 boolean currentlyPlaying = false;   //flag for if a file is currently playing or not
 int contentCount = 5;               //total number of video files in the array
+boolean flipVideo = true;           //toggles flip and rotate of video during playback (RAW avis seem to come in back to front and upside down - could export them in reverse I guess)
 
 
 
@@ -54,11 +58,20 @@ void movieEvent(Movie m)
 void draw()
 {
 
+  if(flipVideo=true)
+  {
+    translate(width/2,height/2);
+    imageMode(CENTER);
+    rotate(PI);
+    scale(-1,1);
+  }
+
+
   if (currentlyPlaying==false) //<>//
   {
-    //pick a number at random
-    int r = (int) random(content.length);
-    println("currently playing: "+r);
+    //pick the next video from the playlist
+    int r = playlist[(playHead % playlist.length)];
+    println("currently playing video: "+r+" which is position "+(playHead % playlist.length)+" in the playlist");
     //reset that video and start playing it
     content[r].jump(0);
     content[r].play();
@@ -68,14 +81,18 @@ void draw()
     t0 = millis()/1000;
     //set currentlyPlaying to true
     currentlyPlaying=true;
+    //increment the playHead counter to move to the next item in the playlist
+    playHead++;
   }
 
+    //what does this bit actually do? Load the next frame for display maybe? Should probably read the API docs...
    if (content[index].available() ) 
     {
       content[index].read();
     }
 
-  image(content[index], 0, 0);
+  //put the video (frame) on the screen
+  image(content[index], 0, 0,width,height);
  
   if (t > content[index].duration() + t0) {
     println("finished! "+index);
