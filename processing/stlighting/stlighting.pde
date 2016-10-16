@@ -3,9 +3,10 @@ OPC opc;
 Movie content[];
 
 //global variables and constants
-int index = 0;    //Global index of currently playing video from content array
-float t0;         //playback time counter
-float t;          //playback time counter
+int index = 0;                      //Global index of currently playing video from content array
+float t0;                           //playback time counter
+float t;                            //playback time counter
+boolean currentlyPlaying = false;
 
 
 
@@ -14,11 +15,12 @@ void setup()
   //set the player size, frame rate and so on
   size(800, 200);
   frameRate (60);
+  background(0);  //background 0 for black so start up doesn't cause a strange flash
 
   //set up the video object, populate it with video in the data folder so we can manipulate it later
   content = new  Movie[3];
 
-  //can this be done in a loop?
+  //can this be done in a loop? maybe if the filenames are sensible
   content[0] = new Movie(this,"comp1.avi");
   content[1] = new Movie(this, "comp2.avi");
   content[2] = new Movie(this, "comp3.avi");
@@ -46,6 +48,11 @@ void movieEvent(Movie m)
 
 void draw()
 {
+
+
+
+
+
    if (content[index].available() ) {
     content[index].read();
   }
