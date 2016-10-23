@@ -4,7 +4,8 @@ Movie content[];
 int[] playlist = { 1,2,3,4,0,0,1,3,2,4 };
 
 
-//global variables and constants
+//global variables and 
+float samplePointSpacing = 10.0;
 int playHead = 0;
 int index = 0;                      //Global index of currently playing video from content array
 float t0;                           //playback time counter
@@ -18,7 +19,7 @@ boolean flipVideo = true;           //toggles flip and rotate of video during pl
 void setup()
 {
   //set the player size, frame rate and so on
-  size(800, 200);
+  size(960, 160);
   frameRate (60);
   background(0);  //background 0 for black so start up doesn't cause a strange flash
 
@@ -44,9 +45,14 @@ void setup()
   // Connect to the local instance of fcserver
   opc = new OPC(this, "127.0.0.1", 7890);
 
-  // Map one 50-LED strip to the center of the window
-  //opc.ledStrip(index, count, x, y, spacing, angle, reversed)
-  opc.ledStrip(0, 50, width/2, height/4, width / 55, 0, false);
+  // Six 8x8 grids side by side
+  opc.ledGrid8x8(0, (1*(samplePointSpacing*8/2)), height/2, samplePointSpacing, 0, false);
+  opc.ledGrid8x8(64, (2*(samplePointSpacing*8/2)), height/2, samplePointSpacing, 0, false);
+  opc.ledGrid8x8(128, (3*(samplePointSpacing*8/2)), height/2, samplePointSpacing, 0, false);
+  opc.ledGrid8x8(192, (4*(samplePointSpacing*8/2)), height/2,  samplePointSpacing, 0, false);
+  opc.ledGrid8x8(256, (5*(samplePointSpacing*8/2)), height/2,  samplePointSpacing, 0, false);
+  opc.ledGrid8x8(320, (6*(samplePointSpacing*8/2)), height/2,  samplePointSpacing, 0, false);
+
 
 }
 
