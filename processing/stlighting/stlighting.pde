@@ -1,7 +1,9 @@
 import processing.video.*;
 OPC opc;
 Movie content[];
-int[] playlist = { 27,26,7,4,11,11,14,26,22,14,17,11,3 };
+//int[] playlist = { 27,26,7,4,11,11,14,26,22,14,17,11,3 };
+IntList playlist;
+
 
 //NOTES
 //can we use array lists for playback management or even maybe IntList for better speed.
@@ -58,8 +60,7 @@ void setup()
   //opc.ledStrip(index, count, x, y, spacing, angle, reversed)
   opc.ledStrip(0, 50, width/2, height/4, width / 55, 0, false);
 
-  IntList il = StrPlaylist("abc");
-  println(il);
+  playlist = StrPlaylist("Dev Is Cool");
 
 
 }
@@ -84,8 +85,8 @@ void draw()
   if (currentlyPlaying==false) //<>// //<>//
   {
     //pick the next video from the playlist
-    int r = playlist[(playHead % playlist.length)];
-    println("currently playing video: "+r+" which is position "+(playHead % playlist.length)+" in the playlist");
+    int r = playlist.get(playHead % playlist.size());
+    println("currently playing video: "+r+" which is position "+(playHead % playlist.size())+" in the playlist");
     //reset that video and start playing it
     content[r].jump(0);
     content[r].play();
@@ -136,6 +137,14 @@ IntList StrPlaylist(String s)
     {
       stringList.append(((int)s.charAt(i))-65); //add each character's ascii number minus 65 to the integer list, this is the video ref that has to play for this character
     }
+
+    //check if the character is a space
+        if (c == ' ') 
+    {
+      stringList.append(26); //26 is the space character reference here
+    }
+
+
   }
 
   return stringList;
