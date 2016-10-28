@@ -1,8 +1,11 @@
 import processing.video.*;
 OPC opc;
 Movie content[];
-//int[] playlist = { 27,26,7,4,11,11,14,26,22,14,17,11,3 };
+
 IntList playlist;
+
+IntList plRun;
+IntList plRightHere;
 
 
 //NOTES
@@ -60,7 +63,12 @@ void setup()
   //opc.ledStrip(index, count, x, y, spacing, angle, reversed)
   opc.ledStrip(0, 50, width/2, height/4, width / 55, 0, false);
 
-  playlist = StrPlaylist("Dev Is Cool");
+  plRun = StrPlaylist(" Run ");
+  plRightHere = StrPlaylist("Right here ");
+  playlist = new IntList();
+  
+  playlist.append(plRun);
+  playlist.append(plRightHere);
 
 
 }
