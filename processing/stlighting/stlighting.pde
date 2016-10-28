@@ -3,9 +3,10 @@ OPC opc;
 Movie content[];
 
 IntList playlist;
+ArrayList<IntList> phrases;
+ArrayList<IntList> answers;
 
-IntList plRun;
-IntList plRightHere;
+
 
 
 //NOTES
@@ -63,12 +64,34 @@ void setup()
   //opc.ledStrip(index, count, x, y, spacing, angle, reversed)
   opc.ledStrip(0, 50, width/2, height/4, width / 55, 0, false);
 
-  plRun = StrPlaylist(" Run ");
-  plRightHere = StrPlaylist("Right here ");
+
+  //init the master playlist, answers list and phrases list
   playlist = new IntList();
+  answers = new ArrayList<IntList>();
+  phrases = new ArrayList<IntList>();
+
+
+  //set up predetermined phrases as intLists which can be appended to things later
+  //add each IntList to an array list so that they can be accsessed by index later
+  //phrases holds stock phrases, answers holds magic 8 ball style answers
+  answers.add(StrPlaylist("no"));  //index 0
+  answers.add(StrPlaylist("yes")); //index 1
+  answers.add(StrPlaylist("maybe"));
+  answers.add(StrPlaylist("not sure"));
+  answers.add(StrPlaylist("right here"));
+
+  phrases.add(StrPlaylist("Run")); //index 0
+  phrases.add(StrPlaylist("Right here"));
+  phrases.add(StrPlaylist("help"));
+  phrases.add(StrPlaylist("demagorgon"));
+  phrases.add(StrPlaylist("upside down"));
+
+
+  //put something in the play list so it doesn't freak out
+  //playlist.append(answers.get(0));
+  //playlist.append(phrases.get(3));
+  playlist.append(27);
   
-  playlist.append(plRun);
-  playlist.append(plRightHere);
 
 
 }
