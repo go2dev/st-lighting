@@ -6,14 +6,11 @@ int[] playlist = { 27,26,7,4,11,11,14,26,22,14,17,11,3 };
 //NOTES
 //can we use array lists for playback management or even maybe IntList for better speed.
 
-// getting to and from numbers with chars
-  //char c[] = {key};
-  //String s = new String(c);
-  //String u = s.toUpperCase();
-  //char cu = u.charAt(0);
-  //println(((int)cu)-65);
 
 //do we need to stop a video playing after its done to stop it using memory/looping forever in the background?
+
+// http requests:
+//https://github.com/runemadsen/HTTP-Requests-for-Processing
 
 //------
 
@@ -47,10 +44,10 @@ void setup()
   //make sure all the videos are paused
   for (int i = 0; i < contentCount; ++i) 
   {
-      String fileName = nf(i,2) + ".avi";
-      content[i] = new Movie(this,fileName);
-      content[i].pause();
-      println("loaded: "+fileName);
+    String fileName = nf(i,2) + ".avi";
+    content[i] = new Movie(this,fileName);
+    content[i].pause();
+    println("loaded: "+fileName);
   }
 
 
@@ -60,6 +57,10 @@ void setup()
   // Map one 50-LED strip to the center of the window
   //opc.ledStrip(index, count, x, y, spacing, angle, reversed)
   opc.ledStrip(0, 50, width/2, height/4, width / 55, 0, false);
+
+  IntList il = StrPlaylist("abc");
+  println(il);
+
 
 }
 
@@ -80,7 +81,7 @@ void draw()
   }
 
 
-  if (currentlyPlaying==false) //<>//
+  if (currentlyPlaying==false) //<>// //<>//
   {
     //pick the next video from the playlist
     int r = playlist[(playHead % playlist.length)];
@@ -99,26 +100,48 @@ void draw()
   }
 
     //what does this bit actually do? Load the next frame for display maybe? Should probably read the API docs...
-   if (content[index].available() ) 
+    if (content[index].available() ) 
     {
       content[index].read();
     }
 
   //put the video (frame) on the screen
   image(content[index], 0, 0,width,height);
- 
+
   if (t > content[index].duration() + t0) {
     println("finished! "+index);
     //if playing has finished, toggle the bool
     currentlyPlaying=false;
   }
- 
+
   t  = millis()/1000;
 
   
 
 }
- 
+
+///Takes a string a returns an integerlist of video file number references to play back the string on the wall
+IntList StrPlaylist(String s)
+{
+  IntList stringList = new IntList();   //init a new list of integers
+  s = s.toUpperCase();                  //convert the inbound string to uppercase
+
+  //cycle through each character in the string
+  for (int i = 0; i<s.length();i++)
+  {
+    char c = s.charAt(i);  //get the current character
+
+    //check if it is a letter
+    if (c >= 'A' && c <= 'Z') 
+    {
+      stringList.append(((int)s.charAt(i))-65); //add each character's ascii number minus 65 to the integer list, this is the video ref that has to play for this character
+    }
+  }
+
+  return stringList;
+}  
+
+
 /*void keyPressed() {
   if (key == 'a') {
     content[0].jump(0);
