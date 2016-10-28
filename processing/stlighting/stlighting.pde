@@ -1,8 +1,21 @@
 import processing.video.*;
 OPC opc;
 Movie content[];
-int[] playlist = { 1,2,3,4,0,0,1,3,2,4 };
+int[] playlist = { 27,26,7,4,11,11,14,26,22,14,17,11,3 };
 
+//NOTES
+//can we use array lists for playback management or even maybe IntList for better speed.
+
+// getting to and from numbers with chars
+  //char c[] = {key};
+  //String s = new String(c);
+  //String u = s.toUpperCase();
+  //char cu = u.charAt(0);
+  //println(((int)cu)-65);
+
+//do we need to stop a video playing after its done to stop it using memory/looping forever in the background?
+
+//------
 
 //global variables and constants
 int playHead = 0;
@@ -10,7 +23,7 @@ int index = 0;                      //Global index of currently playing video fr
 float t0;                           //playback time counter
 float t;                            //playback time counter
 boolean currentlyPlaying = false;   //flag for if a file is currently playing or not
-int contentCount = 5;               //total number of video files in the array
+int contentCount = 28;              //total number of video files in the array
 boolean flipVideo = true;           //toggles flip and rotate of video during playback (RAW avis seem to come in back to front and upside down - could export them in reverse I guess)
 
 
@@ -34,7 +47,7 @@ void setup()
   //make sure all the videos are paused
   for (int i = 0; i < contentCount; ++i) 
   {
-      String fileName = str(i) + ".avi";
+      String fileName = nf(i,2) + ".avi";
       content[i] = new Movie(this,fileName);
       content[i].pause();
       println("loaded: "+fileName);
