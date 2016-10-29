@@ -137,10 +137,7 @@ void setup()
 
 
   //put something in the play list so it doesn't freak out
-  //playlist.append(answers.get(0));
-  //playlist.append(phrases.get(3));
-  //playlist.append(displayModeGroups.get(0));
-  playlist.append(dm_allOnTransition);
+  RandomizePlaylist();
 
     
 
@@ -172,11 +169,12 @@ void draw()
 
     println("currently playing video: "+r+" which is position "+(playHead % playlist.size())+"/"+(playlist.size())+" in the playlist");
 
-    //test if we are at the end of the playlist so we know to do something else
+    //test if we are at the end of the playlist, make a new playlist and reset the playhead
     if ((playHead % playlist.size()) == (playlist.size()-1))
     {
       println("end of current list");
       RandomizePlaylist();
+      playHead = 0;
     }
 
     //reset that video and start playing it
@@ -220,6 +218,10 @@ IntList StrPlaylist(String s)
 {
   IntList stringList = new IntList();   //init a new list of integers
   s = s.toUpperCase();                  //convert the inbound string to uppercase
+  s = " "+s;                            //put a space at the start of the string for a pause
+
+  stringList.append(dm_preMessageFlicker);  //make the flicker the first thing in the message
+
   //cycle through each character in the string
   for (int i = 0; i<s.length();i++)
   {
@@ -232,7 +234,7 @@ IntList StrPlaylist(String s)
     //check if the character is a space
         if (c == ' ') 
     {
-      stringList.append(26); //26 is the space character reference here
+      stringList.append(dm_allOffShort); //26 is the space character reference here
     }
     //if its anything else, just discard it
   }
