@@ -10,13 +10,12 @@ ArrayList<IntList> answers;
 
 
 //NOTES
-//can we use array lists for playback management or even maybe IntList for better speed.
 
-
-//do we need to stop a video playing after its done to stop it using memory/looping forever in the background?
 
 // http requests:
 //https://github.com/runemadsen/HTTP-Requests-for-Processing
+
+//https://learn.adafruit.com/raspberry-pi-open-sound-control/interacting-with-a-web-browser
 
 //------
 
@@ -91,6 +90,7 @@ void setup()
   //playlist.append(answers.get(0));
   //playlist.append(phrases.get(3));
   playlist.append(27);
+  playlist.append(phrases.get(5));
   
 
 
@@ -115,9 +115,19 @@ void draw()
 
   if (currentlyPlaying==false) //<>// //<>//
   {
+
     //pick the next video from the playlist
     int r = playlist.get(playHead % playlist.size());
-    println("currently playing video: "+r+" which is position "+(playHead % playlist.size())+" in the playlist");
+
+    println("currently playing video: "+r+" which is position "+(playHead % playlist.size())+"/"+(playlist.size())+" in the playlist");
+
+    //test if we are at the end of the playlist so we know to do something else
+    if ((playHead % playlist.size()) == (playlist.size()-1))
+    {
+      println("end of current list");
+      RandomizePlaylist();
+    }
+
     //reset that video and start playing it
     content[r].jump(0);
     content[r].play();
@@ -144,6 +154,8 @@ void draw()
     println("finished! "+index);
     //if playing has finished, toggle the bool
     currentlyPlaying=false;
+    //stop the video from playing so it isn't looping in the background
+    content[index].stop();
   }
 
   t  = millis()/1000;
@@ -157,29 +169,51 @@ IntList StrPlaylist(String s)
 {
   IntList stringList = new IntList();   //init a new list of integers
   s = s.toUpperCase();                  //convert the inbound string to uppercase
-
   //cycle through each character in the string
   for (int i = 0; i<s.length();i++)
   {
     char c = s.charAt(i);  //get the current character
-
     //check if it is a letter
     if (c >= 'A' && c <= 'Z') 
     {
       stringList.append(((int)s.charAt(i))-65); //add each character's ascii number minus 65 to the integer list, this is the video ref that has to play for this character
     }
-
     //check if the character is a space
         if (c == ' ') 
     {
       stringList.append(26); //26 is the space character reference here
     }
+    //if its anything else, just discard it
+  }
+  return stringList;
+}  
 
+void RandomizePlaylist()
+{
+  int elements = (int) random(1, 6);              //select a number of elements for this play list, minimum 1
+  int phrases = (int) random (1, (elements/3));   //pick a number between 1 and a third of the total number of items in this list - this is how many phrases will be shown during this play list
+  int modes = elements - phrases;                 //the rest of the items in the playlist will be lighting effects modes
+
+  //clear the current playlist
+  playlist.clear();
+
+  //drop random stuff in to the play list based on the parameters above
+  for (int i = 0; i<elements;i++)
+  {
+    if (i<phrases)
+    {
+       playlist.append(phrases.get((int)random( phrases.length())));
+    }
+    else 
+    {
+      playlist.append((int) random(27, contentCount));  
+    }
 
   }
 
-  return stringList;
-}  
+  playlist.shuffle();
+
+}
 
 
 /*void keyPressed() {
