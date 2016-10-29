@@ -104,6 +104,17 @@ void setup()
   phrases.add(StrPlaylist("help"));
   phrases.add(StrPlaylist("demagorgon"));
   phrases.add(StrPlaylist("upside down"));
+  phrases.add(StrPlaylist("eleven"));
+  phrases.add(StrPlaylist("dustin"));
+  phrases.add(StrPlaylist("will"));
+  phrases.add(StrPlaylist("mike"));
+  phrases.add(StrPlaylist("lucas"));
+  phrases.add(StrPlaylist("barb lives"));
+  phrases.add(StrPlaylist("nancy"));
+  phrases.add(StrPlaylist("joyce"));
+  phrases.add(StrPlaylist("steve"));
+  phrases.add(StrPlaylist("hopper"));
+
 
   dmg = new IntList(dm_allOnTransition,dm_allOnStatic,dm_allOnStatic,dm_allOnStatic); //lights on, stay on for 30 seconds -- index0
   displayModeGroups.add(dmg); 
@@ -303,23 +314,55 @@ void RandomizePlaylist()
 }
 
 
-/*void keyPressed() {
-  if (key == 'a') {
-    content[0].jump(0);
-    content[0].play();
-    index = 0;
-    t0 = millis()/1000;
+void keyPressed() {
+  
+  if (key == 'y') {
+  //clear the current global playlist
+  playlist = new IntList();
+  playHead = 0;
+ // playlist.append(dm_preMessageFlicker);
+  playlist.append(answers.get(1));
+  println("playlist cleared - answering yes");
   }
- 
-  if (key == 's') {
-    content[1].jump(0);
-    content[1].play();
-    index = 1;
-    t0 = millis()/1000;
+
+
+  if (key == 'n') {
+  //clear the current global playlist
+  playlist = new IntList();
+  playHead = 0;
+ // playlist.append(dm_preMessageFlicker);
+  playlist.append(answers.get(0));
+  println("playlist cleared - answering no");
   }
-  if (key == 'd') {
-    content[2].jump(0);
-    content[2].play();
-    index = 2;
-    t0 = millis()/1000;
-  }*/
+
+
+  if (key == 'm') {
+  //clear the current global playlist
+  playlist = new IntList();
+  playHead = 0;
+ // playlist.append(dm_preMessageFlicker);
+  playlist.append(answers.get(2));
+  println("playlist cleared - answering maybe");
+  }
+
+
+  if (key == 'u') {
+  //clear the current global playlist
+  playlist = new IntList();
+  playHead = 0;
+ // playlist.append(dm_preMessageFlicker);
+  playlist.append(answers.get(3));
+  println("playlist cleared - answering unsure");
+  }
+
+    if (key == 'r') {
+  //clear the current global playlist
+  playlist = new IntList();
+  playHead = 0;
+ // playlist.append(dm_preMessageFlicker);
+  playlist.append(answers.get(4));
+  println("playlist cleared - answering right here");
+  }
+
+ }
+
