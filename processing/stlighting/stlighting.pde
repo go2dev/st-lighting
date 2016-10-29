@@ -211,7 +211,7 @@ void draw()
   image(content[index], 0, 0,width,height);
 
   if (t > content[index].duration() + t0) {
-    println("finished! "+index);
+    //println("finished! "+index);
     //if playing has finished, toggle the bool
     currentlyPlaying=false;
     //stop the video from playing so it isn't looping in the background
@@ -291,9 +291,9 @@ void RandomizePlaylist()
   //clear the current global playlist
   playlist = new IntList();
 
-  println("all of temp");
-  println(temp);
-  println("temp by loop");
+  //println("all of temp");
+  //println(temp);
+  //println("temp by loop");
 
   //for each each int list in the array list
   for (int k = 0; k<temp.size();k++)
@@ -306,7 +306,7 @@ void RandomizePlaylist()
     {
       //if there is something there add the set to the main playlist
       playlist.append(innerList);
-      println(innerList);
+      //println(innerList);
     }
   }
 
