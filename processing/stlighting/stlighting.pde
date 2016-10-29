@@ -1,8 +1,13 @@
 import processing.video.*;
+import java.util.Collections;
+
+
 OPC opc;
 Movie content[];
 
 IntList playlist;
+IntList dmg;
+ArrayList<IntList> displayModeGroups;
 ArrayList<IntList> phrases;
 ArrayList<IntList> answers;
 
@@ -17,6 +22,8 @@ ArrayList<IntList> answers;
 
 //https://learn.adafruit.com/raspberry-pi-open-sound-control/interacting-with-a-web-browser
 
+//need to add standard flicker at the start of all messages
+
 //------
 
 //global variables and constants
@@ -25,8 +32,18 @@ int index = 0;                      //Global index of currently playing video fr
 float t0;                           //playback time counter
 float t;                            //playback time counter
 boolean currentlyPlaying = false;   //flag for if a file is currently playing or not
-int contentCount = 28;              //total number of video files in the array
+final int contentCount = 34;       //total number of video files in the array
 boolean flipVideo = true;           //toggles flip and rotate of video during playback (RAW avis seem to come in back to front and upside down - could export them in reverse I guess)
+
+//effects index - connects effect names with numbers for easy use later
+final int dm_allOffShort = 26;
+final int dm_allOnTransition = 27;
+final int dm_allOnStatic = 28;       //All lights on for 10 seconds
+final int dm_preMessageFlicker = 29;
+final int dm_altFlash = 30;
+final int dm_chaser = 31;
+final int dm_chaserReverse = 32;
+final int dm_randomFlash = 33;
 
 
 
@@ -64,15 +81,18 @@ void setup()
   opc.ledStrip(0, 50, width/2, height/4, width / 55, 0, false);
 
 
-  //init the master playlist, answers list and phrases list
+  //init the master playlist, answers list and phrases list, display mode groups list
   playlist = new IntList();
   answers = new ArrayList<IntList>();
   phrases = new ArrayList<IntList>();
+  displayModeGroups = new ArrayList<IntList>();
+  dmg = new IntList();  //temp intlist used later when populating the list of lists
 
 
   //set up predetermined phrases as intLists which can be appended to things later
   //add each IntList to an array list so that they can be accsessed by index later
   //phrases holds stock phrases, answers holds magic 8 ball style answers
+  //displayModeGroups holds sets of xmas lights effects that have to be shown together
   answers.add(StrPlaylist("no"));  //index 0
   answers.add(StrPlaylist("yes")); //index 1
   answers.add(StrPlaylist("maybe"));
@@ -85,13 +105,44 @@ void setup()
   phrases.add(StrPlaylist("demagorgon"));
   phrases.add(StrPlaylist("upside down"));
 
+  dmg = new IntList(dm_allOnTransition,dm_allOnStatic,dm_allOnStatic,dm_allOnStatic); //lights on, stay on for 30 seconds -- index0
+  displayModeGroups.add(dmg); 
+
+  dmg = new IntList(dm_allOnTransition,dm_allOnStatic,dm_allOnStatic,dm_allOnStatic,dm_allOnStatic,dm_allOnStatic,dm_allOnStatic); //lights on, stay on for 60 seconds 
+  displayModeGroups.add(dmg); 
+
+  dmg = new IntList(dm_chaser); //chaser 10 seconds
+  displayModeGroups.add(dmg); 
+
+  dmg = new IntList(dm_chaser,dm_chaser,dm_chaser); //chaser 30 seconds
+  displayModeGroups.add(dmg); 
+
+  dmg = new IntList(dm_randomFlash);
+  displayModeGroups.add(dmg); 
+
+  dmg = new IntList(dm_randomFlash,dm_randomFlash,dm_randomFlash);
+  displayModeGroups.add(dmg); 
+
+  dmg = new IntList(dm_chaserReverse);
+  displayModeGroups.add(dmg); 
+
+  dmg = new IntList(dm_chaserReverse,dm_chaserReverse,dm_chaserReverse);
+  displayModeGroups.add(dmg); 
+
+  dmg = new IntList(dm_altFlash);
+  displayModeGroups.add(dmg); 
+
+  dmg = new IntList(dm_altFlash,dm_altFlash,dm_altFlash);
+  displayModeGroups.add(dmg); 
+
 
   //put something in the play list so it doesn't freak out
   //playlist.append(answers.get(0));
   //playlist.append(phrases.get(3));
-  playlist.append(27);
-  playlist.append(phrases.get(5));
-  
+  //playlist.append(displayModeGroups.get(0));
+  playlist.append(dm_allOnTransition);
+
+    
 
 
 }
@@ -104,7 +155,7 @@ void movieEvent(Movie m)
 void draw()
 {
 
-  if(flipVideo=true)
+  if(flipVideo==true)
   {
     translate(width/2,height/2);
     imageMode(CENTER);
@@ -190,29 +241,63 @@ IntList StrPlaylist(String s)
 
 void RandomizePlaylist()
 {
-  int elements = (int) random(1, 6);              //select a number of elements for this play list, minimum 1
-  int phrases = (int) random (1, (elements/3));   //pick a number between 1 and a third of the total number of items in this list - this is how many phrases will be shown during this play list
-  int modes = elements - phrases;                 //the rest of the items in the playlist will be lighting effects modes
+  int elements = (int) random(2, 6);              //select a number of elements for this play list, minimum 1 //<>//
+  int wallMessages = (int) random (1, (elements/3));   //pick a number between 1 and a third of the total number of items in this list - this is how many phrases will be shown during this play list
 
-  //clear the current playlist
-  playlist.clear();
+  ArrayList<IntList> temp = new ArrayList<IntList>(); //holds groups of video sets which can be shuffled later without disrupting the internal order of each preset
+  IntList innerList = new IntList();  //holds inner int list when unwinding the nested lists
 
-  //drop random stuff in to the play list based on the parameters above
+
+  //for the number of elements we have
   for (int i = 0; i<elements;i++)
   {
-    if (i<phrases)
+    int r = 0;
+    int len = 0;
+    //if i is less than the number of phrases required, pick a phrase at random
+    if (i < wallMessages)
     {
-       playlist.append(phrases.get((int)random( phrases.length())));
-    }
-    else 
-    {
-      playlist.append((int) random(27, contentCount));  
-    }
+      len = phrases.size();
+      r = (int) random (0,len);
+      temp.add(phrases.get(r));
 
+    }
+    //otherwise pick something from the display modes list at random
+    else
+    {
+      len = displayModeGroups.size();
+      r = (int) random (0,len);
+      temp.add(displayModeGroups.get(r));
+    }
   }
 
-  playlist.shuffle();
 
+  //randomize the playback order
+  Collections.shuffle(temp);
+
+
+  //clear the current global playlist
+  playlist = new IntList();
+
+  println("all of temp");
+  println(temp);
+  println("temp by loop");
+
+  //for each each int list in the array list
+  for (int k = 0; k<temp.size();k++)
+  {
+    //extract a single int list
+    innerList = new IntList();
+    innerList.append(temp.get(k));
+    //check if this list is empty or not
+    if(innerList.size() > 0)
+    {
+      //if there is something there add the set to the main playlist
+      playlist.append(innerList);
+      println(innerList);
+    }
+  }
+
+  println("New random playlist generated");
 }
 
 
