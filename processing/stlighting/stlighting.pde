@@ -148,9 +148,15 @@ void setup()
 
 
   //put something in the play list so it doesn't freak out
-  RandomizePlaylist();
-
-    
+ // RandomizePlaylist();
+ 
+ playlist.append(dm_allOnTransition);
+ playlist.append(dm_allOnStatic);
+ playlist.append(StrPlaylist("Thanks for coming"));
+ playlist.append(dm_allOnTransition);
+ playlist.append(dm_randomFlash);
+ playlist.append(dm_altFlash);
+ playlist.append(dm_allOffShort);
 
 
 }
@@ -184,7 +190,7 @@ void draw()
     if ((playHead % playlist.size()) == (playlist.size()-1))
     {
       println("end of current list");
-      RandomizePlaylist();
+     // RandomizePlaylist();
       playHead = 0;
     }
 
