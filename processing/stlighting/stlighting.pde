@@ -114,7 +114,7 @@ void setup()
   phrases.add(StrPlaylist("joyce"));
   phrases.add(StrPlaylist("steve"));
   phrases.add(StrPlaylist("hopper"));
-
+  
 
   dmg = new IntList(dm_allOnTransition,dm_allOnStatic,dm_allOnStatic,dm_allOnStatic); //lights on, stay on for 30 seconds -- index0
   displayModeGroups.add(dmg); 
@@ -152,7 +152,7 @@ void setup()
  
  playlist.append(dm_allOnTransition);
  playlist.append(dm_allOnStatic);
- playlist.append(StrPlaylist("Thanks for coming"));
+ playlist.append(StrPlaylist("Merry Christmas Greg"));
  playlist.append(dm_allOnTransition);
  playlist.append(dm_randomFlash);
  playlist.append(dm_altFlash);
